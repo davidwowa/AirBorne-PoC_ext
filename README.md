@@ -8,7 +8,7 @@ both bugs live in Apple’s parsing of network data (especially Bonjour/mDNS and
 This bug is in the AirPlayScreen component and can trigger a heap overflow by sending malformed handshake/init packets over TCP to port 7000 on the target device.**
 
 
-**CVE-2025-24252: Heap overflow in AirPlayReceiver**
+**start with CVE-2025-24252, the mDNS TXT record one**
 
 over mDNS (Bonjour). Triggerable via malformed TXT records.
 
