@@ -47,6 +47,62 @@ TCP Malformed Packet PoC CVE-2025-24132
 
 low-level socket-based fuzzing PoC that can be expanded into an RCE trigger with proper payload crafting
 
+edit script for target ip
+
+nano PoC_CVE-2025-24132.py
+
+edit ip, ctrl +x, then y then enter to exit nano.
+
+run PoC
+
+python3 PoC_CVE-2025-24132.py
+
+Confirm the Exploitability
+
+Check your Apple device for
+
+  System reboots
+
+  Pairing process freezes
+
+  AirPlay app or UI crashes
+
+If confirmed, we now have a heap overflow condition. 
+
+**From Crash to Code Execution**
+
+Trigger CVE-2025-24132 (heap overflow via AirPlay TCP pairing) to deliver a reverse shell or execute launchctl on a vulnerable Apple device.
+
+Overflow the heap cleanly
+
+Inject shellcode or a ROP chain
+
+Execute remote code like a reverse shell.
+
+-What We Know
+
+AirPlay runs a service on port 7000/tcp
+
+The pairing-init POST request is vulnerable when oversized
+
+Apple TV and iOS handle pairing using a binary plist-like format, or sometimes a JSON hybrid.
+
+The vulnerable component parses a POST with Content-Type: application/octet-stream.
+
+edit CVE-2025-24132_RCE.py
+
+nano CVE-2025-24132_RCE.py (edit target and attacker ip)
+
+launch CVE-2025-24132 RCE Simulation Script
+
+python3 CVE-2025-24132_RCE.py
+
+DISCLAIMER-
+
+USER ASSUMES RESPONSIBILITY WHEN UTILIZING THIS TOOL. ONLY TEST ON NETWORKS YOU HAVE EXPLICIT PERMISSION TO TEST ON.
+
+
+
 
 
 
