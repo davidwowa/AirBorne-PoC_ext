@@ -5,9 +5,11 @@ CVE-2025-24252: Heap overflow in AirPlayReceiver over mDNS (Bonjour). Triggerabl
 
 CVE-2025-24132: Out-of-bounds write in AirPlayScreen component via crafted AirPlay pairing/init message.
 
-**CVE-2025-24252**
+**CVE-2025-24132 – AirPlay Pairing Exploit PoC**
 
-Install scapy and avahi on Kali
+This bug is in the AirPlayScreen component and can trigger a heap overflow by sending malformed handshake/init packets over TCP to port 7000 on the target device.**
+
+-Install scapy and avahi on Kali
 
 sudo apt update
 
