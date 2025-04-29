@@ -18,10 +18,13 @@ sudo apt update
 
 sudo apt install python3-scapy avahi-daemon -y
 
+Start avahi (mDNS responder)
+
 sudo systemctl start avahi-daemon
 
 git clone https://github.com/ekomsSavior/2-PoCs-1-repository.git
 
+run PoC Script 
 
 
 
