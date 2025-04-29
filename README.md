@@ -1,6 +1,8 @@
 #AIRBORNE 2-PoCs-1-repository
 poc for CVE-2025-24252 &amp; CVE-2025-24132
 
+both bugs live in Apple’s parsing of network data (especially Bonjour/mDNS and AirPlay’s TCP pairing flow)
+
 **CVE-2025-24132 – AirPlay Pairing Exploit PoC**
 
 This bug is in the AirPlayScreen component and can trigger a heap overflow by sending malformed handshake/init packets over TCP to port 7000 on the target device.**
