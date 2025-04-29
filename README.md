@@ -18,13 +18,21 @@ sudo apt update
 
 sudo apt install python3-scapy avahi-daemon -y
 
-Start avahi (mDNS responder)
+-Start avahi (mDNS responder)
 
 sudo systemctl start avahi-daemon
 
 git clone https://github.com/ekomsSavior/2-PoCs-1-repository.git
 
-run PoC Script 
+-Set your attacker IP and interface on crashtest_CVE-2025-24252.py
+
+nano crashtest_CVE-2025-24252.py (edit ip & interface)
+
+ctrl + x, then y and finally enter to exit.
+
+-run PoC Script 
+
+python3 crashtest_CVE-2025-24252.py
 
 
 
