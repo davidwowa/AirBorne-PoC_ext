@@ -15,7 +15,7 @@ sudo apt install python3-scapy avahi-daemon -y
 
 sudo systemctl start avahi-daemon
 
-git clone https://github.com/ekomsSavior/2-poc-s-1-repository
+git clone https://github.com/ekomsSavior/2-PoCs-1-repository.git
 
 
 
