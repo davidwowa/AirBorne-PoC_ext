@@ -21,7 +21,7 @@ sudo apt update
 sudo apt install python3-scapy avahi-daemon -y
 sudo systemctl start avahi-daemon
 ```
-Wi-Fi Adapter Requirement
+**Wi-Fi Adapter Requirement**
 
 To run crashtest_CVE-2025-24252.py and chain_exploit.py, you must use a Wi-Fi adapter that supports monitor mode.
 
