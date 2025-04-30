@@ -57,7 +57,7 @@ Set your attacker IP and interface. Then save and exit (`CTRL+X`, then `Y`, then
 ### Run the PoC
 
 ```bash
-python3 crashtest_CVE-2025-24252.py
+sudo python3 crashtest_CVE-2025-24252.py
 ```
 
 ### Monitor Target Behavior
