@@ -21,6 +21,23 @@ sudo apt update
 sudo apt install python3-scapy avahi-daemon -y
 sudo systemctl start avahi-daemon
 ```
+Wi-Fi Adapter Requirement
+
+To run crashtest_CVE-2025-24252.py and chain_exploit.py, you must use a Wi-Fi adapter that supports monitor mode.
+
+### Before running the scanner or chain exploit, make sure to
+
+```bash
+sudo ip link set wlan0 down
+sudo iwconfig wlan0 mode monitor
+sudo ip link set wlan0 up
+```
+
+Replace wlan0 with the name of your adapter
+
+You must be on the same Wi-Fi network as the target Apple devices
+
+Monitor mode is required to properly receive multicast mDNS traffic over port 5353
 
 ### Clone the Repo
 
